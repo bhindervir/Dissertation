@@ -1,0 +1,203 @@
+# Required Libraries
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.cluster import KMeans
+from sklearn.metrics import silhouette_score
+
+# Simulation Parameters
+num_devices = 500
+time_intervals = 100
+energy_levels = np.random.uniform(low=0.2, high=1.0, size=num_devices)  # Random energy levels for devices
+device_coordinates = np.random.rand(num_devices, 2) * 100  # Random coordinates in a 100x100 area
+
+# Initial Cluster Formation using KMeans for simplicity
+num_clusters = int(np.sqrt(num_devices) / 2)  # Initial number of clusters
+kmeans = KMeans(n_clusters=num_clusters, random_state=42).fit(device_coordinates)
+cluster_labels = kmeans.labels_
+
+# Adaptive Routing Protocol Simulation (Simplified Version)
+def adaptive_routing_simulation(time_intervals, device_coordinates, energy_levels, cluster_labels):
+    energy_consumption_log = []
+    performance_log = []
+
+    for t in range(time_intervals):
+        # Randomly simulate network conditions and device usage leading to energy depletion
+        energy_levels -= np.random.uniform(low=0.01, high=0.05, size=num_devices)
+
+        # Re-cluster if necessary based on energy levels or network conditions change
+        if t % 10 == 0:  # Re-cluster every 10 intervals for this simulation
+            num_clusters = int(np.sqrt(num_devices) / 2) + np.random.randint(-2, 3)  # Adjust cluster count
+            kmeans = KMeans(n_clusters=num_clusters, random_state=42+t).fit(device_coordinates)
+            cluster_labels = kmeans.labels_
+
+        # Log energy consumption and silhouette score as a proxy for network performance/efficiency
+        energy_consumption_log.append(np.sum(energy_levels))
+        performance_log.append(silhouette_score(device_coordinates, cluster_labels))
+
+    return energy_consumption_log, performance_log
+
+energy_consumption_log, performance_log = adaptive_routing_simulation(
+    time_intervals, device_coordinates, energy_levels, cluster_labels)
+
+# Visualization of Simulation Results
+plt.figure(figsize=(14, 6))
+
+plt.subplot(1, 2, 1)
+plt.plot(energy_consumption_log, label='Total Energy Consumption')
+plt.title('Energy Consumption Over Time')
+plt.xlabel('Time Interval')
+plt.ylabel('Energy Units')
+plt.legend()
+
+plt.subplot(1, 2, 2)
+plt.plot(performance_log, label='Network Performance', color='green')
+plt.title('Network Performance Over Time')
+plt.xlabel('Time Interval')
+plt.ylabel('Silhouette Score')
+plt.legend()
+
+plt.tight_layout()
+plt.show()
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.cluster import KMeans
+from sklearn.metrics import silhouette_score
+
+# Simulation Parameters
+num_devices = 500
+time_intervals = 100
+energy_levels = np.random.uniform(low=0.2, high=1.0, size=num_devices)  # Random energy levels for devices
+device_coordinates = np.random.rand(num_devices, 2) * 100  # Random coordinates in a 100x100 area
+
+# Initial Cluster Formation using KMeans for simplicity, with n_init explicitly set
+num_clusters = int(np.sqrt(num_devices) / 2)  # Initial number of clusters
+kmeans = KMeans(n_clusters=num_clusters, n_init=10, random_state=42).fit(device_coordinates)
+cluster_labels = kmeans.labels_
+
+# Adaptive Routing Protocol Simulation (Simplified Version)
+def adaptive_routing_simulation(time_intervals, device_coordinates, energy_levels, cluster_labels):
+    energy_consumption_log = []
+    performance_log = []
+
+    for t in range(time_intervals):
+        # Randomly simulate network conditions and device usage leading to energy depletion
+        energy_levels -= np.random.uniform(low=0.01, high=0.05, size=num_devices)
+
+        # Re-cluster if necessary based on energy levels or network conditions change
+        if t % 10 == 0:  # Re-cluster every 10 intervals for this simulation
+            num_clusters = int(np.sqrt(num_devices) / 2) + np.random.randint(-2, 3)  # Adjust cluster count
+            kmeans = KMeans(n_clusters=num_clusters, n_init=10, random_state=42+t).fit(device_coordinates)
+            cluster_labels = kmeans.labels_
+
+        # Log energy consumption and silhouette score as a proxy for network performance/efficiency
+        energy_consumption_log.append(np.sum(energy_levels))
+        performance_log.append(silhouette_score(device_coordinates, cluster_labels))
+
+    return energy_consumption_log, performance_log
+
+energy_consumption_log, performance_log = adaptive_routing_simulation(
+    time_intervals, device_coordinates, energy_levels, cluster_labels)
+
+# Visualization of Simulation Results
+plt.figure(figsize=(14, 6))
+
+plt.subplot(1, 2, 1)
+plt.plot(energy_consumption_log, label='Total Energy Consumption')
+plt.title('Energy Consumption Over Time')
+plt.xlabel('Time Interval')
+plt.ylabel('Energy Units')
+plt.legend()
+
+plt.subplot(1, 2, 2)
+plt.plot(performance_log, label='Network Performance', color='green')
+plt.title('Network Performance Over Time')
+plt.xlabel('Time Interval')
+plt.ylabel('Silhouette Score')
+plt.legend()
+
+plt.tight_layout()
+plt.show()
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.cluster import KMeans
+from sklearn.metrics import silhouette_score
+
+# Setup simulation parameters
+num_devices = 500
+time_intervals = 100
+energy_levels = np.random.uniform(low=0.2, high=1.0, size=num_devices)  # Random initial energy levels for devices
+device_coordinates = np.random.rand(num_devices, 2) * 100  # Device coordinates in a 100x100 area
+
+# Function to perform KMeans clustering with explicit n_init
+def perform_clustering(num_clusters, device_coordinates):
+    return KMeans(n_clusters=num_clusters, n_init=10, random_state=42).fit(device_coordinates)
+
+# Initial Cluster Formation
+num_clusters = int(np.sqrt(num_devices) / 2)
+initial_clustering = perform_clustering(num_clusters, device_coordinates)
+initial_cluster_labels = initial_clustering.labels_
+
+# Simulation function
+def adaptive_routing_simulation(time_intervals, device_coordinates, energy_levels, initial_cluster_labels):
+    energy_consumption_log = []
+    performance_log = []
+    cluster_distributions_over_time = []
+
+    for t in range(time_intervals):
+        # Simulate energy depletion
+        energy_levels -= np.random.uniform(low=0.01, high=0.05, size=num_devices)
+
+        # Periodic re-clustering based on changing conditions
+        if t % 10 == 0:
+            num_clusters = int(np.sqrt(num_devices) / 2) + np.random.randint(-2, 3)
+            kmeans = perform_clustering(num_clusters, device_coordinates)
+            cluster_labels = kmeans.labels_
+        else:
+            cluster_labels = initial_cluster_labels  # Use initial clustering outside re-clustering intervals
+
+        energy_consumption_log.append(np.sum(energy_levels))
+        performance_log.append(silhouette_score(device_coordinates, cluster_labels))
+        cluster_distributions_over_time.append(cluster_labels)
+
+    return energy_consumption_log, performance_log, cluster_distributions_over_time
+
+# Execute simulation
+energy_consumption_log, performance_log, cluster_distributions_over_time = adaptive_routing_simulation(
+    time_intervals, device_coordinates, energy_levels, initial_cluster_labels)
+
+
+# Visualization
+plt.figure(figsize=(18, 12))
+
+# Total Energy Consumption Over Time
+plt.subplot(2, 3, 1)
+plt.plot(energy_consumption_log, label='Total Energy Consumption')
+plt.title('Energy Consumption Over Time')
+plt.xlabel('Time Interval')
+plt.ylabel('Energy Units')
+plt.legend()
+
+# Network Performance Over Time (Silhouette Score)
+plt.subplot(2, 3, 2)
+plt.plot(performance_log, label='Network Performance', color='green')
+plt.title('Network Performance Over Time')
+plt.xlabel('Time Interval')
+plt.ylabel('Silhouette Score')
+plt.legend()
+
+# Scatter Plot of Device Energy Levels at End of Simulation
+plt.subplot(2, 3, 3)
+energy_colors = energy_levels / energy_levels.max()  # Normalize energy levels for color mapping
+plt.scatter(device_coordinates[:, 0], device_coordinates[:, 1], c=energy_colors, cmap='viridis')
+plt.colorbar(label='Normalized Energy Level')
+plt.title('Device Energy Levels')
+plt.xlabel('X Coordinate')
+plt.ylabel('Y Coordinate')
+
+# The rest of your visualization code remains unchanged
+
+plt.tight_layout()
+plt.show()
+
+
